@@ -34,14 +34,18 @@ class ActedActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.RESTRICT)
     note = models.CharField(max_length=1024)
 
+    @staticmethod
     def add(activity_id):
         activity = Activity.objects.get(id=activity_id)
+        prev_acted = ActedActivity.objects.last()
         acted_activity = ActedActivity(
+            started=prev_acted.finished if prev_acted else timezone.now(),
             finished=timezone.now(),
             activity=activity)
         acted_activity.save()
         return acted_activity
 
+    @staticmethod
     def get_acted_for_day(day: datetime):
         acted = ActedActivity.objects.filter(
             # only today after 5 AM:
@@ -50,31 +54,28 @@ class ActedActivity(models.Model):
             finished__day=day.day,
             finished__hour__gte=5,
         ).order_by('-finished')
-        seconds_by_type = defaultdict(int)
 
-        duration_by_name = defaultdict(timedelta)
+        activity_types_totals = defaultdict(int)
+        # acted activities grouped sorted by total duration
+        activities_totals = defaultdict(timedelta)
         names_with_types = defaultdict(str)
 
         for i, today_activity in enumerate(acted):
-            is_earliest = (i == len(acted) - 1)
+            duration = today_activity.finished - today_activity.started
 
-            duration = timedelta(seconds=0) if is_earliest \
-                else (today_activity.finished - acted[i + 1].finished)
-
-            duration_by_name[today_activity.activity.name] += duration
+            activities_totals[today_activity.activity.name] += duration
             names_with_types[today_activity.activity.name] = today_activity.activity.activity_type
-
-            seconds_by_type[today_activity.activity.activity_type] += duration.seconds
+            activity_types_totals[today_activity.activity.activity_type] += duration.seconds
 
             today_activity.duration = precisedelta(
                 duration, minimum_unit="minutes", format="%0.0f")
 
         # must be non zero
-        total_seconds = max(sum(seconds_by_type.values()), 1)
+        total_seconds = max(sum(activity_types_totals.values()), 1)
 
         percents_by_type = defaultdict(int)
         # Alphabetically sorted by labels
-        for k, v in sorted(seconds_by_type.items(), key=lambda e: e[0]):
+        for k, v in sorted(activity_types_totals.items(), key=lambda e: e[0]):
             percents_by_type[k] = round(v / total_seconds * 100)
 
         acted.all = str(dict(percents_by_type))
@@ -84,7 +85,7 @@ class ActedActivity(models.Model):
         acted.total_seconds = total_seconds
 
         # sort by duration
-        durs_sorted = list(duration_by_name.items())
+        durs_sorted = list(activities_totals.items())
         durs_sorted.sort(key=lambda d: d[1].seconds, reverse=True)
 
         # humanize and add activity type

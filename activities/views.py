@@ -1,10 +1,13 @@
+from datetime import datetime, date
+
+import humanize
+from dateutil.relativedelta import relativedelta
+
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.utils import timezone, dateparse
-import datetime
-import humanize
-
+from django.views.generic import ListView
 
 from .models import ActedActivity, Activity
 
@@ -13,18 +16,16 @@ def index(request):
     activities = Activity.objects.order_by('activity_type')
 
     date_param = request.GET.get('date')
-    date = dateparse.parse_date(date_param) if date_param else timezone.now()
+    query_date = dateparse.parse_date(
+        date_param) if date_param else timezone.now()
 
-    today = datetime.datetime.today()
-
-    last_day = today.day + 1 if date.month == today.month else date.day + 1
-
-    month_days = [(dt := datetime.date(date.year, date.month, d), humanize.naturaldate(dt))
-                  for d in range(1, last_day)]
+    last_day: datetime = query_date + relativedelta(day=31)  # won't exceed 31
+    month_days = [(dt :=date(query_date.year, query_date.month, d), humanize.naturaldate(dt))
+                  for d in range(1, last_day.day)]
 
     context = {
         'activities': activities,
-        'acted_activities': ActedActivity.get_acted_for_day(date),
+        'acted_activities': ActedActivity.get_acted_for_day(query_date),
         'month_days': month_days
     }
 
@@ -32,16 +33,15 @@ def index(request):
 
 
 def add_acted_activity(request, activity_id):
-    added_acted_activity = ActedActivity.add(activity_id)
-    messages.success(
-        request, f"<b>{added_acted_activity.activity.name}</b> was added successfully!")
+    added = ActedActivity.add(activity_id)
+    messages.success(request,
+                     f"<b>{added.activity.name}</b> was added successfully!")
     return redirect('index')
 
 
 def add_acted_activity_api(request, activity_id):
     if request.method == "GET":
         added_acted_activity = ActedActivity.add(activity_id)
-        print(added_acted_activity)
         return HttpResponse(f"{added_acted_activity.activity.name} was added successfully!")
     else:
         messages.error(request, f"Use GET method.")

@@ -10,5 +10,5 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(ActedActivity)
 class ActedActivityAdmin(admin.ModelAdmin):
-    list_display = ('activity', 'finished', 'id')
+    list_display = ('activity', 'started', 'finished', 'id')
     list_filter = ('finished', )

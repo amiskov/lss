@@ -122,8 +122,8 @@
             {% else %}
                 class="table-secondary"
             {% endif %}>
-                <td class="align-middle">
-                    <span class="badge text-dark">{{ a.finished|date:"H:i" }}</span>
+                <td class="align-middle text-nowrap">
+                    <span class="badge text-dark">{{ a.started|date:"H:i" }}—{{ a.finished|date:"H:i" }}</span>
                 </td>
                 <td class="align-middle" style="padding-left: 0" width="100%">
                     {{ a.activity.name }} <span
