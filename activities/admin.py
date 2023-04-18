@@ -1,3 +1,14 @@
 from django.contrib import admin
+from .models import Activity, ActedActivity
 
-# Register your models here.
+
+@admin.register(Activity)
+class ActivityAdmin(admin.ModelAdmin):
+    list_display = ('name', 'activity_type', 'id')
+    list_filter = ('activity_type', )
+
+
+@admin.register(ActedActivity)
+class ActedActivityAdmin(admin.ModelAdmin):
+    list_display = ('activity', 'finished', 'id')
+    list_filter = ('finished', )

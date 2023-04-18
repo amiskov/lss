@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # Local
     'accounts.apps.AccountsConfig',
+    'activities.apps.ActivitiesConfig',
 ]
 
 MIDDLEWARE = [
@@ -111,9 +112,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 
