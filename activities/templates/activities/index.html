@@ -1,153 +1,46 @@
 {% load l10n %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⏳ Time | Less Stupidly Spent</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'track_time/css/bootstrap.min.css' %}"> -->
-</head>
-<body>
-<div class="container" style="margin-top: 1rem">
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                {% autoescape off %}
-                    <div {% if message.tags %} class="alert alert-{{ message.tags }} " {% endif %}> {{ message }}</div>
-                {% endautoescape %}
-            {% endfor %}
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>⏳ Time | Less Stupidly Spent</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+        <script src="{% static 'js/htmx.min.js' %}" defer></script>
+        <script src="{% static 'js/debug.js' %}" defer></script>
+    </head>
+    <body>
+        <div class="container" style="margin-top: 1rem">
+            <h5 class="text-uppercase"><a class="text-decoration-none" href="/">Less Stupidly Spent</a></h5>
+            <hr>
+            {% include "activities/partial.html" %}
         </div>
-    {% endif %}
-    {% if activities %}
-        {% for a in activities %}
-            <form style="margin: 0 .5em .5em 0; display: inline-block;" action="{% url 'add_acted_activity' a.id %}"
-                  method="post">
-                {% csrf_token %}
-                <button type="submit"
-                        {% if a.activity_type == "good" %}
-                        class="btn-success btn"
-                        {% elif a.activity_type == "bad" %}
-                        class="btn-danger btn"
-                        {% else %}
-                        class="btn-secondary btn"
-                        {% endif %}
-                >{{ a.name }}</button>
-            </form>
-        {% endfor %}
-    {% else %}
-        <p>No activities are available.</p>
-    {% endif %}
-    <hr>
-    <ul class="list-inline">
-        {% for d, name in month_days %}
-            <li class="list-inline-item"><a href="?date={{ d|date:"Y-m-d" }}">{{ name }}</a></li>
-        {% endfor %}
-    </ul>
-
-    <div class="container">
-    <div class="row">
-    <div class="col-md-6 col-sm-12">
-
-    {% if acted_activities|length >= 1 %}
-        <div id="pieChart" style="margin: 0 0 20px;"></div>
-        <script>
-            const data = [{
-                type: "pie",
-                values: {{acted_activities.values}},
-                labels: {{acted_activities.labels|safe}},
-                marker: {
-                    colors: [
-                        {% if "bad" in acted_activities.labels %}
-                            '#f8d7da',
-                        {% endif %}
-                        {% if "good" in acted_activities.labels %}
-                            '#d1e7dd',
-                        {% endif %}
-                        {% if "necessary" in acted_activities.labels %}
-                            '#e2e3e5',
-                        {% endif %}
-                    ]
-                },
-                {#textinfo: "label+percent",#}
-                textinfo: "percent",
-                insidetextorientation: "radial"
-            }];
-            const layout = {
-                height: 300,
-                width: 300,
-                margin: {"t": 10, "b": 10, "l": 10, "r": 10},
-                showlegend: false
-            };
-            const config = {
-                staticPlot: true,
-                displayModeBar: false,
-                responsive: true
-            }
-        </script>
-    {% else %}
-        <p>No activities for {{ acted_activities.day }}. Click on activities above to start tracking! </p>
-    {% endif %}
-</div>
-
-        <div class="col-md-6 col-sm-12">
-
-    <table class="table">
-        {% for n, v, t in acted_activities.totals %}
-            <tr {% if t == "good" %}
-                class="table-success"
-            {% elif t == "bad" %}
-                class="table-danger"
-            {% else %}
-                class="table-secondary"
-            {% endif %}>
-                <td>{{n}}</td><td>{{v}}</td></tr>
-        {% endfor %}
-    </table>
-    </div>
-</div>
-</div>
-
-
-
-    <table class="table">
-        <tbody>
-        {% for a in acted_activities %}
-            <tr {% if a.activity.activity_type == "good" %}
-                class="table-success"
-            {% elif a.activity.activity_type == "bad" %}
-                class="table-danger"
-            {% else %}
-                class="table-secondary"
-            {% endif %}>
-                <td class="align-middle text-nowrap">
-                    <span class="badge text-dark">{{ a.started|date:"H:i" }}—{{ a.finished|date:"H:i" }}</span>
-                </td>
-                <td class="align-middle" style="padding-left: 0" width="100%">
-                    {{ a.activity.name }} <span
-                        class="badge rounded-pill border border-secondary text-secondary">{{ a.duration }}</span>
-                </td>
-                <td class="align-middle">
-                    <form style="display: inline-block;" action="{% url 'remove_acted_activity' a.id %}">
-                        <button class="btn btn-danger" type="submit">&times;</button>
-                    </form>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-<footer>
-    <p><br></p>
-</footer>
-
-{% if acted_activities|length > 1 %}
-    <script defer src="{% static 'track_time/js/plotly-2.11.1.min.js' %}"></script>
-    <script>
-        window.addEventListener('DOMContentLoaded', _ => Plotly.newPlot('pieChart', data, layout, config));
-    </script>
-{% endif %}
-</body>
+        <footer class="pt-10">
+            <div class="container">
+                <br>
+                <hr>
+                <p>© 2023 Andrey Miskov</p>
+            </div>
+        </footer>
+        {% if acted_activities|length > 1 %}
+            <script defer src="{% static 'js/plotly-2.11.1.min.js' %}"></script>
+            <script>
+                let data = null, layout = null, config = null;
+                // Variables are populated in `partial.html`
+                document.addEventListener('DOMContentLoaded', function(evt) {
+                  initPlot()
+                  Plotly.newPlot('pieChart', data, layout, config)
+                });
+                document.addEventListener('htmx:afterRequest', function(evt) {
+                    setTimeout(function() {
+                        initPlot();
+                        Plotly.newPlot('pieChart', data, layout, config)
+                    }, 500)
+                });
+            </script>
+        {% endif %}
+    </body>
 </html>

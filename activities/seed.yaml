@@ -1,0 +1,60 @@
+- model: activities.activity
+  pk: 1
+  fields:
+    name: 🛌 Sleep
+    activity_type: necessary
+- model: activities.activity
+  pk: 2
+  fields:
+    name: 🥘 Cooking/Eating
+    activity_type: necessary
+- model: activities.activity
+  pk: 3
+  fields:
+    name: 🚀 My Projects
+    activity_type: good
+- model: activities.activity
+  pk: 4
+  fields:
+    name: 🛀 Hygiene
+    activity_type: necessary
+- model: activities.activity
+  pk: 5
+  fields:
+    name: 🛒 Shopping
+    activity_type: necessary
+- model: activities.activity
+  pk: 6
+  fields:
+    name: 🔄 Misc
+    activity_type: necessary
+- model: activities.activity
+  pk: 7
+  fields:
+    name: 🏡 Housekeeping
+    activity_type: necessary
+- model: activities.activity
+  pk: 8
+  fields:
+    name: 🗑 Wasted
+    activity_type: bad
+- model: activities.activity
+  pk: 9
+  fields:
+    name: 🤑 Big House
+    activity_type: necessary
+- model: activities.activity
+  pk: 10
+  fields:
+    name: 💆🏻 Self Care
+    activity_type: good
+- model: activities.activity
+  pk: 11
+  fields:
+    name: 🎶 Music
+    activity_type: good
+- model: activities.activity
+  pk: 12
+  fields:
+    name: 🧘 Rest
+    activity_type: necessary

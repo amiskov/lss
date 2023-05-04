@@ -1,17 +1,18 @@
-from collections import defaultdict
+from __future__ import annotations
+from datetime import date, timedelta
+
+from humanize import precisedelta
+
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from datetime import timedelta, datetime, time
-from humanize import precisedelta
 
 
 class Activity(models.Model):
     name = models.CharField(max_length=512)
 
     class Meta:
-        verbose_name_plural = "Activities"
+        verbose_name_plural = _("Activities")
 
     class Type(models.TextChoices):
         GOOD = "good", _('Good')
@@ -34,19 +35,35 @@ class ActedActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.RESTRICT)
     note = models.CharField(max_length=1024)
 
+    @property
+    def duration(self) -> timedelta:
+        return self.finished - self.started
+
+    @property
+    def duration_for_humans(self) -> str:
+        return precisedelta(
+            self.duration,
+            minimum_unit="minutes", format="%0.0f"
+        )
+
     @staticmethod
-    def add(activity_id):
+    def add(activity_id: str) -> ActedActivity:
         activity = Activity.objects.get(id=activity_id)
         prev_acted = ActedActivity.objects.last()
+
+        started = timezone.now()
+        if prev_acted and (timezone.now() - prev_acted.finished < timedelta(days=1)):
+            started = prev_acted.finished
+
         acted_activity = ActedActivity(
-            started=prev_acted.finished if prev_acted else timezone.now(),
+            started=started,
             finished=timezone.now(),
             activity=activity)
         acted_activity.save()
         return acted_activity
 
     @staticmethod
-    def get_acted_for_day(day: datetime):
+    def get_acted_for_day(day: date):
         acted = ActedActivity.objects.filter(
             # only today after 5 AM:
             finished__year=day.year,
@@ -54,58 +71,12 @@ class ActedActivity(models.Model):
             finished__day=day.day,
             finished__hour__gte=5,
         ).order_by('-finished')
-
-        activity_types_totals = defaultdict(int)
-        # acted activities grouped sorted by total duration
-        activities_totals = defaultdict(timedelta)
-        names_with_types = defaultdict(str)
-
-        for i, today_activity in enumerate(acted):
-            duration = today_activity.finished - today_activity.started
-
-            activities_totals[today_activity.activity.name] += duration
-            names_with_types[today_activity.activity.name] = today_activity.activity.activity_type
-            activity_types_totals[today_activity.activity.activity_type] += duration.seconds
-
-            today_activity.duration = precisedelta(
-                duration, minimum_unit="minutes", format="%0.0f")
-
-        # must be non zero
-        total_seconds = max(sum(activity_types_totals.values()), 1)
-
-        percents_by_type = defaultdict(int)
-        # Alphabetically sorted by labels
-        for k, v in sorted(activity_types_totals.items(), key=lambda e: e[0]):
-            percents_by_type[k] = round(v / total_seconds * 100)
-
-        acted.all = str(dict(percents_by_type))
-        acted.day = day
-        acted.labels = str(list(percents_by_type.keys()))
-        acted.values = str(list(percents_by_type.values()))
-        acted.total_seconds = total_seconds
-
-        # sort by duration
-        durs_sorted = list(activities_totals.items())
-        durs_sorted.sort(key=lambda d: d[1].seconds, reverse=True)
-
-        # humanize and add activity type
-        durs = []
-        for d in durs_sorted:
-            name, dur = d
-            t = (name, precisedelta(dur, minimum_unit="minutes", format="%0.0f"), names_with_types[name])
-            durs.append(t)
-
-        acted.totals = durs
-        acted.names_with_types = names_with_types
-        return acted
-
-    @classmethod
-    def acted_today(cls):
-        today = timezone.now()
-        return cls.get_acted_for_day(today)
+        return (day, acted)
 
     class Meta:
-        verbose_name_plural = "Acted Activities"
+        verbose_name_plural = _("Acted Activities")
 
-    def __str__(self):
-        return self.activity.name + ", " + self.finished.strftime("%y-%m-%d %H:%M")
+    def __str__(self) -> str:
+        return self.activity.name + ", " + \
+            self.started.strftime("%y-%m-%d %H:%M") + "-" + \
+            self.finished.strftime("%y-%m-%d %H:%M")

@@ -1,0 +1,156 @@
+<div id="table-and-form">
+  {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        {% autoescape off %}
+        <div {% if message.tags %} class="alert alert-{{ message.tags }} " {% endif %}>
+          {{ message }}
+        </div>
+      {% endautoescape %}
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if activities %}
+{% for a in activities %}
+  {% comment %}
+  <form
+    style="margin: 0 .5em .5em 0; display: inline-block;"
+    action="{% url 'add_acted_activity' a.id %}"
+    method="post">
+    {% csrf_token %}
+    <button type="submit"
+    {% if a.activity_type == "good" %}
+      class="btn-success btn"
+      {% elif a.activity_type == "bad" %}
+      class="btn-danger btn"
+    {% else %}
+      class="btn-secondary btn"
+    {% endif %}
+    >{{ a.name }}</button>
+  </form>
+  {% endcomment %}
+  <form
+    style="margin: 0 .5em .5em 0; display: inline-block;"
+    hx-post="{% url 'add_acted_activity' a.id %}"
+    hx-target="#table-and-form">
+    {% csrf_token %}
+    <input type="hidden" name="query_date" value="{{ query_date|date:"Y-m-d" }}">
+    <button type="submit"
+    {% if a.activity_type == "good" %}
+      class="btn-success btn"
+      {% elif a.activity_type == "bad" %}
+      class="btn-danger btn"
+    {% else %}
+      class="btn-secondary btn"
+    {% endif %}
+    >{{ a.name }}</button>
+  </form>
+{% endfor %}
+{% else %}
+<p>No activities are available.</p>
+{% endif %}
+<hr>
+<ul class="list-inline">
+{% for d, name in month_days %}
+  <li class="list-inline-item">
+    <a 
+    {% if d == query_date %}
+    class="btn btn-outline-dark"
+    {% endif %}
+    href="?date={{ d|date:'Y-m-d' }}">{{ name }}</a>
+  </li>
+{% endfor %}
+</ul>
+<div class="container">
+<div class="row">
+  <div class="col-md-6 col-sm-12">
+    {% if acted_activities|length >= 1 %}
+      <div id="pieChart" style="margin: 0 0 20px;"></div>
+      <script>
+        function initPlot() {
+        data = [{
+        type: "pie",
+        values: {{values}},
+        labels: {{labels|safe}},
+        marker: {
+        colors: [
+        {% if "bad" in labels %}
+          '#f8d7da',
+        {% endif %}
+        {% if "good" in labels %}
+          '#d1e7dd',
+        {% endif %}
+        {% if "necessary" in labels %}
+          '#e2e3e5',
+        {% endif %}
+        ]
+        },
+        {#textinfo: "label+percent",#}
+        textinfo: "percent",
+        insidetextorientation: "radial"
+        }];
+        layout = {
+        height: 300,
+        width: 300,
+        margin: {"t": 10, "b": 10, "l": 10, "r": 10},
+        showlegend: false
+        };
+        config = {
+        staticPlot: true,
+        displayModeBar: false,
+        responsive: true
+        }
+      }
+      </script>
+    {% else %}
+      <p>No activities for {{ query_date }}. Click on activities above to start tracking! </p>
+    {% endif %}
+  </div>
+  <div class="col-md-6 col-sm-12">
+    <table class="table">
+      {% for n, v, t in totals %}
+        <tr {% if t == "good" %}
+          class="table-success"
+          {% elif t == "bad" %}
+          class="table-danger"
+        {% else %}
+          class="table-secondary"
+        {% endif %}>
+        <td>{{n}}</td><td>{{v}}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+</div>
+<table class="table">
+<tbody>
+  {% for a in acted_activities %}
+    <tr {% if a.activity.activity_type == "good" %}
+      class="table-success"
+      {% elif a.activity.activity_type == "bad" %}
+      class="table-danger"
+    {% else %}
+      class="table-secondary"
+    {% endif %}>
+    <td class="align-middle text-nowrap">
+      <span class="badge text-dark">{{ a.started|date:"H:i" }}—{{ a.finished|date:"H:i" }}</span>
+    </td>
+    <td class="align-middle" style="padding-left: 0" width="100%">
+      {{ a.activity.name }} <span
+      class="badge rounded-pill border border-secondary text-secondary">{{ a.duration_for_humans }}</span>
+    </td>
+    <td class="align-middle">
+      <form 
+        style="display: inline-block;"
+        hx-post="{% url 'remove_acted_activity' a.id %}"
+        hx-target="#table-and-form">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">&times;</button>
+      </form>
+    </td>
+  </tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
