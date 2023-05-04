@@ -1,0 +1,31 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block title %}Activities{% endblock title %}
+
+{% block content %}
+    <div class="container" style="margin-top: 1rem">
+        {% include "activities/partial.html" %}
+    </div>
+{% endblock content %}
+
+
+{% block after_footer %}
+    {% if acted_activities|length > 1 %}
+        <script defer src="{% static 'js/plotly-2.11.1.min.js' %}"></script>
+        <script>
+            let data = null, layout = null, config = null;
+            // Variables are populated in `partial.html`
+            document.addEventListener('DOMContentLoaded', function(evt) {
+              initPlot()
+              Plotly.newPlot('pieChart', data, layout, config)
+            });
+            document.addEventListener('htmx:afterRequest', function(evt) {
+                setTimeout(function() {
+                    initPlot();
+                    Plotly.newPlot('pieChart', data, layout, config)
+                }, 500)
+            });
+        </script>
+    {% endif %}
+{% endblock after_footer %}

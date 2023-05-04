@@ -1,9 +1,0 @@
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_div }}
-
-  <!-- redirect to previous page -->
-  <input type="hidden" name="next" value="{{ request.path }}">
-  
-  <input class="btn" type="submit" value="Save">
-</form>

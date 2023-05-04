@@ -1,5 +1,5 @@
 run:
-	./manage.py runserver
+	./manage.py runserver 0.0.0.0:8080
 
 freeze:
 	pip freeze > requirements.txt

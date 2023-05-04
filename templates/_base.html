@@ -1,0 +1,37 @@
+{% load l10n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}⏳ Time {% endblock %} | Less Stupidly Spent</title>
+
+        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'bcss/styles.css' %}">
+
+        <script src="{% static 'js/htmx.min.js' %}" defer></script>
+        {% if debug %}
+            <script src="{% static 'js/debug.js' %}" defer></script>
+        {% endif %}
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        <header class="container mt-3">
+        <h5 class="text-uppercase"><a class="text-decoration-none" href="/">Less Stupidly Spent</a></h5>
+        <hr>
+        </header>
+        {% block content %}{% endblock content %}
+
+        <footer class="pt-10">
+            <div class="container">
+                <br>
+                <hr>
+                <p>© 2023 Andrey Miskov</p>
+            </div>
+        </footer>
+
+        {% block after_footer %}{% endblock after_footer %}
+    </body>
+</html>

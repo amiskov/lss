@@ -117,7 +117,7 @@
       class="table-secondary"
     {% endif %}>
     <td class="align-middle text-nowrap">
-      <span class="badge text-dark">{{ a.started|date:"H:i" }}—{{ a.finished|date:"H:i" }}</span>
+      {% include "activities/_time.html" with acted=a %}
     </td>
     <td class="align-middle text-nowrap" style="padding-left: 0">
       {{ a.activity.name }} <span

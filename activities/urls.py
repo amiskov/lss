@@ -16,4 +16,12 @@ urlpatterns = [
     path('<int:actedactivity_id>/remove/',
          views.remove_acted_activity,
          name='remove_acted_activity'),
+
+    # Time Only
+    path('<pk>/show_time',
+         views.show_time,
+         name='show_time'),
+    path('<pk>/change_time',
+         views.change_time,
+         name='change_time_form'),
 ]

@@ -36,7 +36,17 @@ explicitly enable it only if it has a string value 'True'.
 DEBUG = os.environ.get('DEBUG', False) == 'True' 
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '192.168.1.96',
+]
+
+INTERNAL_IPS = (
+    '127.0.0.1',
+    '0.0.0.0',
+    '192.168.1.96',
+)
+
 
 
 # Application definition
@@ -51,15 +61,22 @@ INSTALLED_APPS = [
 
     # 3rd party
     'django_htmx',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'corsheaders',
 
     # Local
     'accounts.apps.AccountsConfig',
     'activities.apps.ActivitiesConfig',
 ]
 
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,12 +87,17 @@ MIDDLEWARE = [
     'django_htmx.middleware.HtmxMiddleware',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = ['*']
+CORS_ORIGIN_WHITELIST = ('http://0.0.0.0:8080', 'http://192.168.1.96:8080')
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
