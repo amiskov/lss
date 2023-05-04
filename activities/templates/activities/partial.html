@@ -13,23 +13,6 @@
 
 {% if activities %}
 {% for a in activities %}
-  {% comment %}
-  <form
-    style="margin: 0 .5em .5em 0; display: inline-block;"
-    action="{% url 'add_acted_activity' a.id %}"
-    method="post">
-    {% csrf_token %}
-    <button type="submit"
-    {% if a.activity_type == "good" %}
-      class="btn-success btn"
-      {% elif a.activity_type == "bad" %}
-      class="btn-danger btn"
-    {% else %}
-      class="btn-secondary btn"
-    {% endif %}
-    >{{ a.name }}</button>
-  </form>
-  {% endcomment %}
   <form
     style="margin: 0 .5em .5em 0; display: inline-block;"
     hx-post="{% url 'add_acted_activity' a.id %}"
@@ -126,7 +109,7 @@
 <table class="table">
 <tbody>
   {% for a in acted_activities %}
-    <tr {% if a.activity.activity_type == "good" %}
+    <tr id="{{a.id}}" {% if a.activity.activity_type == "good" %}
       class="table-success"
       {% elif a.activity.activity_type == "bad" %}
       class="table-danger"
@@ -136,9 +119,15 @@
     <td class="align-middle text-nowrap">
       <span class="badge text-dark">{{ a.started|date:"H:i" }}—{{ a.finished|date:"H:i" }}</span>
     </td>
-    <td class="align-middle" style="padding-left: 0" width="100%">
+    <td class="align-middle text-nowrap" style="padding-left: 0">
       {{ a.activity.name }} <span
       class="badge rounded-pill border border-secondary text-secondary">{{ a.duration_for_humans }}</span>
+    </td>
+    <td class="align-middle" width="100%">
+      <em>{{a.note}}</em>
+    </td>
+    <td class="align-middle">
+      <a href="{{a.get_absolute_url}}">edit</a>
     </td>
     <td class="align-middle">
       <form 

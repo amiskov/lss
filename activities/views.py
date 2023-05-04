@@ -1,4 +1,4 @@
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 from collections import defaultdict
 
 import humanize
@@ -9,8 +9,21 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.utils import timezone, dateparse
+from django.views.generic import UpdateView
+from django.shortcuts import redirect
+from django.urls import reverse
 
 from .models import ActedActivity, Activity
+
+
+class ActedUpdateView(UpdateView):
+    model = ActedActivity
+    fields = ["started", "finished", "note"]
+    context_object_name = "acted"
+    template_name = "activities/acted_form.html"
+
+    def get_success_url(self):
+        return self.request.GET.get('next', reverse('index'))
 
 
 def index(request):
@@ -88,7 +101,9 @@ def add_acted_activity(request, activity_id):
 def add_acted_activity_api(request, activity_id):
     if request.method == "GET":
         added_acted_activity = ActedActivity.add(activity_id)
-        return HttpResponse(f"{added_acted_activity.activity.name} was added successfully!")
+        return HttpResponse(
+            f"{added_acted_activity.activity.name} was added successfully!"
+        )
     else:
         messages.error(request, f"Use GET method.")
         return redirect('index')

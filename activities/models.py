@@ -6,6 +6,7 @@ from humanize import precisedelta
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.urls import reverse
 
 
 class Activity(models.Model):
@@ -34,6 +35,9 @@ class ActedActivity(models.Model):
     finished = models.DateTimeField('action finished')
     activity = models.ForeignKey(Activity, on_delete=models.RESTRICT)
     note = models.CharField(max_length=1024)
+
+    def get_absolute_url(self):
+        return reverse("edit_acted_activity", kwargs={"pk": self.pk})
 
     @property
     def duration(self) -> timedelta:
