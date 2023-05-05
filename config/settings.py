@@ -39,6 +39,7 @@ DEBUG = os.environ.get('DEBUG', False) == 'True'
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '192.168.1.96',
+    'v1131340.hosted-by-vdsina.ru',
 ]
 
 INTERNAL_IPS = (
@@ -90,7 +91,12 @@ MIDDLEWARE = [
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOW_HEADERS = ['*']
-CORS_ORIGIN_WHITELIST = ('http://0.0.0.0:8080', 'http://0.0.0.0:8000', 'http://192.168.1.96:8080')
+CORS_ORIGIN_WHITELIST = (
+    'http://0.0.0.0:8080',
+    'http://0.0.0.0:8000',
+    'http://192.168.1.96:8080',
+    'v1131340.hosted-by-vdsina.ru',
+)
 
 ROOT_URLCONF = 'config.urls'
 
