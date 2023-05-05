@@ -58,7 +58,6 @@
               }
             });
             document.addEventListener('htmx:afterRequest', function(evt) {
-                console.log(data);
                 setTimeout(function() {
                         initPlot();
                     if(data !== null) {
