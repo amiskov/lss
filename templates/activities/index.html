@@ -47,21 +47,26 @@
 
 
 {% block after_footer %}
-    {% if acted_activities|length > 1 %}
         <script defer src="{% static 'js/plotly-2.11.1.min.js' %}"></script>
         <script>
             let data = null, layout = null, config = null;
             // Variables are populated in `partial.html`
             document.addEventListener('DOMContentLoaded', function(evt) {
-              initPlot()
-              Plotly.newPlot('pieChart', data, layout, config)
+                  initPlot();
+            if(data !== null) {
+                Plotly.newPlot('pieChart', data, layout, config)
+              }
             });
             document.addEventListener('htmx:afterRequest', function(evt) {
+                console.log(data);
                 setTimeout(function() {
-                    initPlot();
-                    Plotly.newPlot('pieChart', data, layout, config)
+                        initPlot();
+                    if(data !== null) {
+                        Plotly.newPlot('pieChart', data, layout, config)
+                    }
                 }, 500)
             });
         </script>
+    {% if acted_activities|length > 1 %}
     {% endif %}
 {% endblock after_footer %}

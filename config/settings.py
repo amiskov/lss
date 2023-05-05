@@ -43,7 +43,7 @@ ALLOWED_HOSTS = [
 
 INTERNAL_IPS = (
     '127.0.0.1',
-    '0.0.0.0',
+    # '0.0.0.0',
     '192.168.1.96',
 )
 
@@ -87,10 +87,10 @@ MIDDLEWARE = [
     'django_htmx.middleware.HtmxMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = ['*']
-CORS_ORIGIN_WHITELIST = ('http://0.0.0.0:8080', 'http://192.168.1.96:8080')
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_HEADERS = ['*']
+CORS_ORIGIN_WHITELIST = ('http://0.0.0.0:8080', 'http://0.0.0.0:8000', 'http://192.168.1.96:8080')
 
 ROOT_URLCONF = 'config.urls'
 
@@ -162,8 +162,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

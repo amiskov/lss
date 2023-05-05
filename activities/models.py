@@ -34,7 +34,7 @@ class ActedActivity(models.Model):
     started = models.DateTimeField('action started')
     finished = models.DateTimeField('action finished')
     activity = models.ForeignKey(Activity, on_delete=models.RESTRICT)
-    note = models.CharField(max_length=1024)
+    note = models.CharField(max_length=1024, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse("edit_acted_activity", kwargs={"pk": self.pk})

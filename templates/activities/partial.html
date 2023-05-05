@@ -14,31 +14,31 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-sm-12">
-      {% if acted_activities|length >= 1 %}
         <div id="pieChart" style="height: 300px; margin: 0 0 20px;"></div>
         <script>
         function initPlot() {
         data = [{
-        type: "pie",
-        values: {{values}},
-        labels: {{labels|safe}},
-        marker: {
-        colors: [
-        {% if "bad" in labels %}
-          '#f8d7da',
-        {% endif %}
-        {% if "good" in labels %}
-          '#d1e7dd',
-        {% endif %}
-        {% if "necessary" in labels %}
-          '#e2e3e5',
-        {% endif %}
-        ]
-        },
-        {#textinfo: "label+percent",#}
-        textinfo: "percent",
-        insidetextorientation: "radial"
+          type: "pie",
+          values: {{values}},
+          labels: {{labels|safe}},
+          marker: {
+            colors: [
+            {% if "bad" in labels %}
+              '#f8d7da',
+            {% endif %}
+            {% if "good" in labels %}
+              '#d1e7dd',
+            {% endif %}
+            {% if "necessary" in labels %}
+              '#e2e3e5',
+            {% endif %}
+            ]
+          },
+          {#textinfo: "label+percent",#}
+          textinfo: "percent",
+          insidetextorientation: "radial"
         }];
+
         layout = {
         height: 300,
         width: 300,
@@ -52,9 +52,6 @@
         }
         }
         </script>
-      {% else %}
-        <p>No activities for {{ query_date }}. Click on activities above to start tracking! </p>
-      {% endif %}
     </div>
     <div class="col-md-6 col-sm-12">
       <table class="table">
@@ -91,7 +88,9 @@
         class="badge rounded-pill border border-secondary text-secondary">{{ a.duration_for_humans }}</span>
       </td>
       <td class="align-middle" width="100%">
-        <em>{{a.note}}</em>
+        {% if a.note %}
+          <em class="text-secondary">{{a.note}}</em>
+        {% endif %}
       </td>
       <td class="align-middle">
         <a href="{{a.get_absolute_url}}">edit</a>
