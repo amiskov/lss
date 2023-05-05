@@ -95,7 +95,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://0.0.0.0:8080',
     'http://0.0.0.0:8000',
     'http://192.168.1.96:8080',
-    'v1131340.hosted-by-vdsina.ru',
+    'http://v1131340.hosted-by-vdsina.ru',
 )
 
 ROOT_URLCONF = 'config.urls'
