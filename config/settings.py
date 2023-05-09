@@ -40,6 +40,7 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     '192.168.1.96',
     'v1131340.hosted-by-vdsina.ru',
+    'am.local',
 ]
 
 INTERNAL_IPS = (
@@ -96,6 +97,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://0.0.0.0:8000',
     'http://192.168.1.96:8080',
     'http://v1131340.hosted-by-vdsina.ru',
+    'http://am.local',
 )
 
 ROOT_URLCONF = 'config.urls'
