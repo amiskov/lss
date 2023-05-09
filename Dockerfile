@@ -14,3 +14,5 @@ RUN pip install -r requirements.txt
 
 # Copy project
 COPY . .
+RUN python manage.py collectstatic --noinput
+RUN python manage.py loaddata --format=yaml ./activities/seed.yaml

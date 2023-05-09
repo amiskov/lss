@@ -47,6 +47,7 @@ INTERNAL_IPS = (
     '127.0.0.1',
     '0.0.0.0',
     '192.168.1.96',
+    'am.local',
 )
 
 
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic', # must be before Django's `.statifiles`
     'django.contrib.staticfiles',
 
     # 3rd party
@@ -77,6 +79,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # right below `.SecurityMiddleware`
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -172,7 +175,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# STATIC_ROOT = BASE_DIR / "staticfiles" # TODO: use with Nginx
+STATIC_ROOT = BASE_DIR / "staticfiles" # TODO: use with Nginx
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
