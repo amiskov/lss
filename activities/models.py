@@ -56,7 +56,8 @@ class ActedActivity(models.Model):
         prev_acted = ActedActivity.objects.last()
 
         started = timezone.now()
-        if prev_acted and (timezone.now() - prev_acted.finished < timedelta(days=1)):
+        if prev_acted and \
+                (timezone.now() - prev_acted.finished < timedelta(days=1)):
             started = prev_acted.finished
 
         acted_activity = ActedActivity(
