@@ -87,6 +87,15 @@
         {{ a.activity.name }} <span
         class="badge rounded-pill border border-secondary text-secondary">{{ a.duration_for_humans }}</span>
       </td>
+      <td class="align-middle text-nowrap">
+        {% if a.tag %}
+          {% for t in a.tag.all %}
+          <span class="badge bg-secondary">
+            {{ t.name }}
+          </span>
+          {% endfor %}
+        {% endif %}
+      </td>
       <td class="align-middle" width="100%">
         {% if a.note %}
           <em class="text-secondary">{{a.note}}</em>

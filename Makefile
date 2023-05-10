@@ -6,3 +6,6 @@ freeze:
 
 seed:
 	./manage.py loaddata --format=yaml ./activities/seed.yaml
+
+shell:
+	./manage.py shell

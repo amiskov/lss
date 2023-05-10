@@ -20,7 +20,7 @@ from .models import ActedActivity, Activity
 
 class ActedUpdateView(UpdateView):
     model = ActedActivity
-    fields = ["started", "finished", "note"]
+    fields = ["started", "finished", "note", "tag"]
     context_object_name = "acted"
     template_name = "activities/acted_form.html"
 
@@ -120,6 +120,8 @@ def index(request):
         'acted_activities': acted,
         'month_days': month_days
     }
+
+    print(activities)
 
     if request.htmx:
         return render(request, 'activities/partial.html', context)

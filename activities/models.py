@@ -30,11 +30,22 @@ class Activity(models.Model):
         return self.name
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=512)
+
+    class Meta:
+        verbose_name_plural = _("Tags")
+
+    def __str__(self):
+        return self.name
+
+
 class ActedActivity(models.Model):
     started = models.DateTimeField('action started')
     finished = models.DateTimeField('action finished')
     activity = models.ForeignKey(Activity, on_delete=models.RESTRICT)
     note = models.CharField(max_length=1024, null=True, blank=True)
+    tag = models.ManyToManyField(Tag)
 
     def get_absolute_url(self):
         return reverse("edit_acted_activity", kwargs={"pk": self.pk})
@@ -70,12 +81,14 @@ class ActedActivity(models.Model):
     @staticmethod
     def get_acted_for_day(day: date):
         acted = ActedActivity.objects.filter(
-            # only today after 5 AM:
             finished__year=day.year,
             finished__month=day.month,
             finished__day=day.day,
-            finished__hour__gte=5,
-        ).order_by('-finished')
+            # only today after 5 AM:
+            # finished__hour__gte=5,
+        ).order_by('-finished').prefetch_related('tag')
+        for a in acted:
+            print(a.tag.all())
         return (day, acted)
 
     class Meta:
