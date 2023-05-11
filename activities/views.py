@@ -67,7 +67,7 @@ def index(request):
 
     date_param: str | None = request.GET.get('date')
     query_date: date = (date_param and dateparse.parse_date(date_param)) \
-        or timezone.now().date()
+        or timezone.localdate()
 
     last_day: date = query_date + relativedelta(day=31)  # won't exceed 31
     month_days = [(dt :=date(query_date.year, query_date.month, d),
