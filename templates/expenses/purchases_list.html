@@ -1,0 +1,40 @@
+{% extends "_base.html" %}
+{% load static %}
+{% load djmoney %}
+
+{% block title %}Purchases{% endblock title %}
+
+{% block content %}
+<div class="container">
+{% for p in purchases %}
+<div class="card mb-3 w-50">
+<dl class="card-body purchase">
+  <dt class="card-title">
+    {{p.place.name}}
+    <span class="badge text-dark text-muted text-bg-light bg-light">{{p.datetime}}</span>
+    <!-- query_date|date:"Y-m-d"  -->
+  </dt>
+  <dd>
+    {% if p.note %}
+      <p class="card-subtitle text-muted">{{p.note}}</p>
+    {% endif %}
+  <table class="table">
+  {% for e in p.expenses.all %}
+  <tr>
+    <td class="w-100">{{e.product.name}}</td>
+    <td class=" text-end">{{e.price}} </td>
+  </tr>
+  {% endfor %}
+  <tfoot>
+    <tr>
+    <th>Итого</th>
+    <td>{{p.totals}}</td>
+  </tr>
+  </tfoot>
+  </table>
+  </dd>
+  </dl>
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

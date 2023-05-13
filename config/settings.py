@@ -69,14 +69,19 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'corsheaders',
+    'djmoney',
 
     # Local
-    'accounts.apps.AccountsConfig',
-    'activities.apps.ActivitiesConfig',
+    'accounts',
+    'activities',
+    'expenses',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CURRENCIES = ('RUB', 'USD', 'EUR')
+CURRENCY_CHOICES = [('RUB', '₽'), ('USD', '$'), ('EUR', '€')]
 
 MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -162,7 +167,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Europe/Moscow'
 
