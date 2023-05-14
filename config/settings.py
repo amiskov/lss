@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'accounts',
     'activities',
     'expenses',
+    'incomes',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
