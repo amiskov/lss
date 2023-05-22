@@ -18,6 +18,7 @@
     {% if p.note %}
       <p class="card-subtitle text-muted">{{p.note}}</p>
     {% endif %}
+    <p><a href="{% url 'edit_purchase' p.id %}">edit</a></p>
   <table class="table">
   {% for e in p.expenses.all %}
   <tr>

@@ -11,9 +11,6 @@ class ExpenseAdmin(admin.ModelAdmin):
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = ('datetime', 'place', 'note', 'id')
-
-    class Meta:
-        ordering = ['-datetime', 'place']
     search_fields = ['place', 'note', 'datetime']
 
 
@@ -33,5 +30,3 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category')
     search_fields = ['name']
     
-    class Meta:
-        ordering = ['name']

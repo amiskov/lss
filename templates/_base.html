@@ -19,8 +19,11 @@
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         <header class="container mt-3">
-        <h5 class="text-uppercase"><a class="text-decoration-none" href="/">Less Stupidly Spent</a></h5>
-        <hr>
+            <h5 class="text-uppercase"><a class="text-decoration-none" href="/">Less Stupidly Spent</a></h5>
+            <a href="/expenses">Expenses</a>
+            |
+            <a href="/incomes">Incomes</a>
+            <hr>
         </header>
         {% block content %}{% endblock content %}
 

@@ -16,8 +16,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -37,7 +40,7 @@ class Purchase(models.Model):
     note = models.CharField(max_length=256, blank=True)
 
     class Meta:
-        ordering = ['-datetime', 'place']
+        ordering = ['-id', '-datetime', 'place']
 
     @property
     def totals(self):

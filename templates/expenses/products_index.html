@@ -1,0 +1,25 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block title %}Products{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <h1>Products Index</h1>
+  <div id="productForms">
+    {% include "expenses/partials/product_form.html" %}
+  </div>
+  <div class="my-4">
+    <button class="btn btn-secondary"
+    hx-get="{% url 'products_form' %}"
+    hx-target="#productForms"
+    hx-swap="beforeend">
+    + Add Product
+    </button>
+  </div>
+</div>
+<datalist id="existingProducts">
+  {% for p in products %}
+    <option value="{{p.name}}">{{p.name}}, {{p.category}}</li>
+  {% endfor %}
+</datalist>
+{% endblock %}
