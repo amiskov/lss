@@ -10,7 +10,12 @@
 <form method="post">
   {% csrf_token %}
   {{ form|crispy }}
-  <input class="btn btn-primary" type="submit" value="Save">
+  <input class="btn btn-primary" type="submit" value="Save and Add Products">
 </form>
 </div>
+<datalist id="existingPlaces">
+{% for p in places %}
+  <option value="{{p.id}}">{{p.name}}, {{p.address}}</option>
+{% endfor %}
+</datalist>
 {% endblock %}

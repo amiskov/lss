@@ -40,7 +40,7 @@ class Purchase(models.Model):
     note = models.CharField(max_length=256, blank=True)
 
     class Meta:
-        ordering = ['-id', '-datetime', 'place']
+        ordering = ['-datetime', 'place']
 
     @property
     def totals(self):

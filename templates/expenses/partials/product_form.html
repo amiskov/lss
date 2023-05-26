@@ -1,9 +1,7 @@
-<form hx-post="{% url 'products_form' %}" action="">
+<form hx-post="{% url 'products_form' %}" 
+hx-target="#productsList"
+hx-swap="afterbegin"
+action="">
   {{form.as_div}}
   <input type="submit" value="Submit">
 </form>
-
-
-<!-- <datalist id="mylist">
-  <option value="label three" />
-</datalist> -->

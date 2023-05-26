@@ -6,24 +6,28 @@
 
 {% block content %}
 <div class="container">
+  <h2 class="totals w-50">
+  Spent:
+  <span class="float-end">{{ totals }}</span>
+</h2>
 {% for p in purchases %}
 <div class="card mb-3 w-50">
 <dl class="card-body purchase">
   <dt class="card-title">
     {{p.place.name}}
     <span class="badge text-dark text-muted text-bg-light bg-light">{{p.datetime}}</span>
-    <!-- query_date|date:"Y-m-d"  -->
+    <a href="{% url 'edit_purchase' p.id %}">edit place&time</a>
   </dt>
   <dd>
     {% if p.note %}
       <p class="card-subtitle text-muted">{{p.note}}</p>
     {% endif %}
-    <p><a href="{% url 'edit_purchase' p.id %}">edit</a></p>
+    <p><a href="{% url 'purchase_fill' p.id %}">edit products</a></p>
   <table class="table">
   {% for e in p.expenses.all %}
   <tr>
     <td class="w-100">{{e.product.name}}</td>
-    <td class=" text-end">{{e.price}} </td>
+    <td class="text-end">{{e.price}}</td>
   </tr>
   {% endfor %}
   <tfoot>

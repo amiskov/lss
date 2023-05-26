@@ -1,1 +1,5 @@
-<p>{{product.name}}, {{product.category}} <span class="badge rounded-pill text-bg-success bg-success">добавлен</span></p>
+<li id="addedProduct{{product.pk}}">{{product.name}}, {{product.category}}
+  <a href="#"
+    hx-target="#addedProduct{{product.pk}}"
+    hx-get="{% url 'product_edit' product.pk %}">edit</a>
+</li>

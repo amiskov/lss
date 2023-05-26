@@ -6,7 +6,6 @@ from .models import Expense, Place, Product, Category, Purchase
 class ExpenseAdmin(admin.ModelAdmin):
     list_display = ('product', 'price', 'purchase', 'id')
     autocomplete_fields = ['product', 'purchase']
-    # list_filter = ('name', 'amount')
 
 @admin.register(Purchase)
 class PurchaseAdmin(admin.ModelAdmin):

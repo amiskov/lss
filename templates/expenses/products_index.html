@@ -4,22 +4,40 @@
 
 {% block content %}
 <div class="container">
-  <h1>Products Index</h1>
-  <div id="productForms">
-    {% include "expenses/partials/product_form.html" %}
-  </div>
-  <div class="my-4">
-    <button class="btn btn-secondary"
-    hx-get="{% url 'products_form' %}"
-    hx-target="#productForms"
-    hx-swap="beforeend">
-    + Add Product
-    </button>
+  <h1>Products</h1>
+  <div class="row">
+    <div class="col col-6">
+      <ul id="productsList">
+      {% for p in products %}
+        <li id="product{{p.pk}}">
+          {{p.name}}
+          <a href="#"
+          hx-post="{% url 'product_delete' p.pk %}"
+          hx-swap="outerHTML"
+          hx-target="#product{{p.pk}}"
+          class="text-danger text-decoration-none">×</a></li>
+      {% endfor %}
+      </ul>
+      
+    </div>
+    <div class="col col-6">
+      <div id="productForms">
+        {% include "expenses/partials/product_form.html" %}
+      </div>
+      <div class="my-4">
+        <button class="btn btn-secondary"
+        hx-get="{% url 'products_form' %}"
+        hx-target="#productForms"
+        hx-swap="beforeend">
+        + Add Product
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 <datalist id="existingProducts">
   {% for p in products %}
-    <option value="{{p.name}}">{{p.name}}, {{p.category}}</li>
+    <option value="{{p.name}}">
   {% endfor %}
 </datalist>
 {% endblock %}

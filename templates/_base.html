@@ -23,6 +23,10 @@
             <a href="/expenses">Expenses</a>
             |
             <a href="/incomes">Incomes</a>
+            |
+            <a href="{% url 'products_index' %}">Products</a>
+            |
+            <a href="{% url 'purchase_form' %}">New Purchase</a>
             <hr>
         </header>
         {% block content %}{% endblock content %}
