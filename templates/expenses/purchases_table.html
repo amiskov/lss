@@ -6,9 +6,20 @@
 
 {% block content %}
 <div class="container">
-  <h4 class="totals w-50">
-  Spent: {% money_localize totals.sum 'RUB' %}
-</h4>
+  <table class="table w-25">
+    <tr class="type-necessary">
+    <th>Necessary</th><td class="text-end">{% money_localize totals.necessary 'RUB' %}</td>
+  </tr>
+    <tr class="type-good">
+    <th>Good</th><td class="text-end"> {% money_localize totals.good 'RUB' %}</td>
+  </tr>
+    <tr class="type-bad">
+    <th>Bad</th><td class="text-end">{% money_localize totals.bad 'RUB' %}</td>
+  </tr>
+    <tr>
+      <th>&sum;</th><td class="text-end">{% money_localize totals.sum 'RUB' %}</td>
+    </tr>
+  </table>
 
 <table class="table w-50">
   <thead>
@@ -26,8 +37,9 @@
             &nbsp;&nbsp;<span class="card-subtitle text-muted fw-normal fst-italic">{{p.note}}</span>
           {% endif %}
         </th>
-        <th class="text-nowrap text-end">&sum; {# money_localize p.expenses__price__sum 'RUB' #}</th>
+        <th class="text-nowrap text-end">{{p.expenses__price__sum}}</th>
       </tr>
+      {% if request.GET.view != 'short' %}
       {% for e in p.expenses.all %}
         <tr class="type-{{e.product.product_type}}">
           <td class="w-100">
@@ -38,6 +50,7 @@
           </td>
         </tr>
       {% endfor %}
+      {% endif %}
     </tbody>
   {% endfor %}
 </table>

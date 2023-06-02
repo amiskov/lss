@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from django.db.models import Sum
+from django.db.models import QuerySet, Sum
 from django.views.generic import UpdateView
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.db.models import Q
 
 from .forms import ProductForm, PurchaseForm, ExpenseForm
@@ -50,7 +50,7 @@ def purchase_fill(request, pk):
                   context)
 
 
-def purchase_form(request):
+def purchase_form(request: HttpRequest):
     if request.method == 'POST':
         form = PurchaseForm(request.POST or None)
         if form.is_valid():
@@ -109,26 +109,33 @@ def purchases_index(request):
     queryset = Purchase.objects \
         .select_related('place') \
         .prefetch_related('expenses__product') \
-        # .annotate(Sum('expenses__price'))
-    # for p in queryset.all():
-    #     print(p.expenses__price__sum)
-    month = request.GET.get('month', None)
-    place = request.GET.get('place', None)
+        .annotate(Sum('expenses__price')) \
+        .order_by('-datetime')
 
+    place = request.GET.get('place', None)
     if place:
-        queryset = queryset.filter(Q(place__name__icontains=place))
+        queryset = queryset.filter(
+            Q(place__name__icontains=place.capitalize())
+        )
+
+    month = request.GET.get('month', None)
     if month:
         queryset = queryset.filter(Q(datetime__month=month))
 
+    # Must be after applying `month` and `place` to calculate totals accordingly
     totals = queryset.aggregate(Sum('expenses__price'))['expenses__price__sum']
+
+    def get_type_totals(type: str) -> float:
+        return queryset.filter(expenses__product__product_type=type) \
+            .aggregate(Sum('expenses__price'))['expenses__price__sum'] or 0
 
     context = {
         'purchases': queryset,
         'totals': {
-            'sum': totals,
-            'bad': 0,
-            'good': 0,
-            'necessary': 0
+            'sum': totals or 0,
+            'bad': get_type_totals('bad'),
+            'good': get_type_totals('good'),
+            'necessary': get_type_totals('necessary'),
         },
     }
     return render(request,

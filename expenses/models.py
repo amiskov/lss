@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.formats import localize
+from django.db.models import Sum
 
-from djmoney.models.fields import MoneyField
+from djmoney.models.fields import MoneyField, Money
 
 
 class Category(models.Model):
@@ -52,13 +53,6 @@ class Purchase(models.Model):
 
     class Meta:
         ordering = ['-datetime', 'place']
-
-    @property
-    def totals(self):
-        totals = 0
-        for e in self.expenses.all():
-            totals += e.price
-        return totals
 
     def __str__(self):
         return self.place.name + '(' + str(self.datetime) + ')'
