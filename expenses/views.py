@@ -1,9 +1,11 @@
 from datetime import datetime
 
-from django.views.generic import ListView, UpdateView
+from django.db.models import Sum
+from django.views.generic import UpdateView
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse
+from django.db.models import Q
 
 from .forms import ProductForm, PurchaseForm, ExpenseForm
 from .models import Purchase, Product, Place, Expense
@@ -29,16 +31,19 @@ def purchase_fill(request, pk):
     if request.method == 'POST':
         form = ExpenseForm(request.POST or None)
         if form.is_valid():
-            expense = form.save()
+            _ = form.save()
             return redirect('purchase_fill', pk)
+
+    purchase = Purchase.objects \
+        .select_related('place') \
+        .prefetch_related('expenses__product') \
+        .get(pk=pk)
 
     context = {
         'purchase_id': pk,
-        'purchase': Purchase.objects.get(pk=pk),
-        'products': Product.objects.all(),
-        'form': ExpenseForm(initial={
-            'purchase': pk,
-        })
+        'purchase': purchase,
+        'products': Product.objects.select_related('category').all(),
+        'form': ExpenseForm(initial={'purchase': pk})
     }
     return render(request,
                   'expenses/purchase_fill.html',
@@ -80,7 +85,6 @@ def products_form(request, pk=None):
         form = ProductForm(request.POST or None)
         if form.is_valid():
             product = form.save()
-            print(product.pk)
             return render(request,
                           'expenses/partials/product.html',
                           {'product': product})
@@ -101,28 +105,35 @@ def products_form(request, pk=None):
                       {'form': ProductForm()})
 
 
-class PurchasesListView(ListView):
-    model = Purchase
-    context_object_name = "purchases"
-    template_name = "expenses/purchases_list.html"
+def purchases_index(request):
+    queryset = Purchase.objects \
+        .select_related('place') \
+        .prefetch_related('expenses__product') \
+        # .annotate(Sum('expenses__price'))
+    # for p in queryset.all():
+    #     print(p.expenses__price__sum)
+    month = request.GET.get('month', None)
+    place = request.GET.get('place', None)
 
-    def get_context_data(self, **kwargs):
-        context = super(PurchasesListView, self).get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        totals = 0
-        for pur in queryset.all():
-            print(pur.totals)
-            totals += pur.totals
-        context['totals'] = totals
-        return context
+    if place:
+        queryset = queryset.filter(Q(place__name__icontains=place))
+    if month:
+        queryset = queryset.filter(Q(datetime__month=month))
 
-    def get_queryset(self):
-        if self.request.method == 'GET':
-            queryset = Purchase.objects.all()
-            month = self.request.GET.get('month', None)
-            if month is not None:
-                queryset = queryset.filter(datetime__month=month)
-            return queryset
+    totals = queryset.aggregate(Sum('expenses__price'))['expenses__price__sum']
+
+    context = {
+        'purchases': queryset,
+        'totals': {
+            'sum': totals,
+            'bad': 0,
+            'good': 0,
+            'necessary': 0
+        },
+    }
+    return render(request,
+                  'expenses/purchases_table.html',
+                  context)
 
 
 class PurchaseUpdateView(UpdateView):

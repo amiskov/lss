@@ -1,12 +1,12 @@
 from django.urls import path
 
-from .views import PurchaseUpdateView, PurchasesListView, products_index, \
+from .views import PurchaseUpdateView, products_index, \
     products_form, purchase_form, purchase_fill, expense_delete, \
-    ProductUpdateView, product_delete
+    product_delete, purchases_index
 
 urlpatterns = [
     # path('?month=<month>', purchase_for_month, name='index_month'),
-    path('', PurchasesListView.as_view(), name='index'),
+    path('', purchases_index, name='index'),
 
     # Product
     path('products/', products_index, name='products_index'),

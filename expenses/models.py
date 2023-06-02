@@ -17,7 +17,18 @@ class Category(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=128, unique=True)
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING)
+    category = models.ForeignKey(to=Category, on_delete=models.DO_NOTHING)
+
+    class Type(models.TextChoices):
+        GOOD = 'good', _('Good')
+        BAD = 'bad', _('Bad')
+        NECESSARY = 'necessary', _('Necessary')
+
+    product_type = models.CharField(
+        max_length=56,
+        choices=Type.choices,
+        default=Type.NECESSARY,
+    )
     
     class Meta:
         ordering = ['name']
@@ -36,7 +47,7 @@ class Place(models.Model):
 
 class Purchase(models.Model):
     datetime = models.DateTimeField('purchase date')
-    place = models.ForeignKey(Place, on_delete=models.DO_NOTHING)
+    place = models.ForeignKey(to=Place, related_name='place', on_delete=models.DO_NOTHING)
     note = models.CharField(max_length=256, blank=True)
 
     class Meta:
@@ -59,8 +70,8 @@ class Expense(models.Model):
                        default_currency='RUB')
     purchase = models.ForeignKey(to=Purchase, related_name="expenses", on_delete=models.CASCADE)
 
-    class Meta:
-        ordering = ['-price']
+    # class Meta:
+        # ordering = ['-price']
 
 
     def __str__(self):

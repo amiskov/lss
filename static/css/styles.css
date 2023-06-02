@@ -4,3 +4,13 @@
 .totals {
   font-family: "iA Writer Mono S", monospace;
 }
+.table-even {
+  background: #EEE;
+}
+
+.type-bad {
+  background: #FEE;
+}
+.type-good {
+  background: #EFE;
+}

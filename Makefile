@@ -9,3 +9,9 @@ seed:
 
 shell:
 	./manage.py shell
+
+makemig:
+	./manage.py makemigrations
+
+mig:
+	./manage.py migrate

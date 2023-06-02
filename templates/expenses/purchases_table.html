@@ -1,0 +1,45 @@
+{% extends "_base.html" %}
+{% load static %}
+{% load djmoney %}
+
+{% block title %}Purchases{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <h4 class="totals w-50">
+  Spent: {% money_localize totals.sum 'RUB' %}
+</h4>
+
+<table class="table w-50">
+  <thead>
+    <th>Товар</th>
+    <th>Цена</th>
+  </thead>
+  {% for p in purchases %}
+    <tbody class="{% if forloop.counter|divisibleby:2 %}table-even{% else %}table-odd{% endif %}">
+      <tr>
+        <th>
+          {{p.place.name}}
+          <span class="badge text-dark text-muted text-bg-light bg-light">{{p.datetime}}</span>
+          <a class="fs-6 fw-normal" href="{% url 'edit_purchase' p.id %}">edit</a>
+          {% if p.note %}
+            &nbsp;&nbsp;<span class="card-subtitle text-muted fw-normal fst-italic">{{p.note}}</span>
+          {% endif %}
+        </th>
+        <th class="text-nowrap text-end">&sum; {# money_localize p.expenses__price__sum 'RUB' #}</th>
+      </tr>
+      {% for e in p.expenses.all %}
+        <tr class="type-{{e.product.product_type}}">
+          <td class="w-100">
+            {{e.product.name}}
+          </td>
+          <td class="text-end">
+            {{e.price}}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}
