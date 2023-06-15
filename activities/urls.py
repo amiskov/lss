@@ -4,6 +4,13 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Activities
+    path('activities/form/',
+         views.add_activity_form,
+         name='add_activity'),
+
+
+    # Acted Activities
     path('', views.index, name='index'),
     path('<int:activity_id>/add/',
          views.add_acted_activity,
@@ -18,7 +25,7 @@ urlpatterns = [
          views.remove_acted_activity,
          name='remove_acted_activity'),
 
-    # Time Only
+    # Acted Activity Time
     path('<pk>/show_time',
          views.show_time,
          name='show_time'),

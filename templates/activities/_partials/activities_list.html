@@ -1,0 +1,23 @@
+{% for a in activities %}
+  <form
+    style="margin: 0 .5em .5em 0; display: inline-block;"
+    hx-post="{% url 'add_acted_activity' a.id %}"
+    hx-target="#table-and-form">
+    {% csrf_token %}
+    <input type="hidden" name="query_date" value="{{ query_date|date:"Y-m-d" }}">
+    <button type="submit"
+    {% if a.activity_type == "good" %}
+      class="btn-success btn"
+      {% elif a.activity_type == "bad" %}
+      class="btn-danger btn"
+    {% else %}
+      class="btn-secondary btn"
+    {% endif %}
+    >{{ a.name }}</button>
+  </form>
+{% endfor %}
+
+<a hx-get="/activities/form/"
+ hx-swap="outerHTML"
+ class="btn btn-secondary"
+ href="#" title="Add Activity">➕</a>

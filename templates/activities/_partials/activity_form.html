@@ -1,0 +1,10 @@
+{% load crispy_forms_tags %}
+
+<form
+  hx-post="{% url 'add_activity' %}"
+  hx-swap="outerHTML"
+  hx-target="#activitiesList"
+  action="/activities/" method="post">
+  {{form|crispy}}
+  <input type="submit" value="Save">
+</form>

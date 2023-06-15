@@ -6,45 +6,28 @@
 {% block content %}
     <div class="container" style="margin-top: 1rem">
 <div>
-{% if activities %}
-{% for a in activities %}
-  <form
-    style="margin: 0 .5em .5em 0; display: inline-block;"
-    hx-post="{% url 'add_acted_activity' a.id %}"
-    hx-target="#table-and-form">
-    {% csrf_token %}
-    <input type="hidden" name="query_date" value="{{ query_date|date:"Y-m-d" }}">
-    <button type="submit"
-    {% if a.activity_type == "good" %}
-      class="btn-success btn"
-      {% elif a.activity_type == "bad" %}
-      class="btn-danger btn"
+  <div id="activitiesList">
+    {% if activities %}
+      {% include "activities/_partials/activities_list.html" with activities=activities %}
     {% else %}
-      class="btn-secondary btn"
+      <p>No activities are available.</p>
     {% endif %}
-    >{{ a.name }}</button>
-  </form>
-{% endfor %}
-{% else %}
-<p>No activities are available.</p>
-{% endif %}
-<hr>
-<ul class="list-inline">
-{% for d, name in month_days %}
-  <li class="list-inline-item">
-    <a 
-    {% if d == query_date %}
-    class="btn btn-outline-dark"
-    {% endif %}
-    href="?date={{ d|date:'Y-m-d' }}">{{ name }}</a>
-  </li>
-{% endfor %}
-</ul>
-        
+  </div>
+  <ul class="list-inline">
+  {% for d, name in month_days %}
+    <li class="list-inline-item">
+      <a 
+      {% if d == query_date %}
+      class="btn btn-outline-dark"
+      {% endif %}
+      href="?date={{ d|date:'Y-m-d' }}">{{ name }}</a>
+    </li>
+  {% endfor %}
+  </ul>
+          
         {% include "activities/partial.html" %}
     </div>
 {% endblock content %}
-
 
 {% block after_footer %}
         <script defer src="{% static 'js/plotly-2.11.1.min.js' %}"></script>

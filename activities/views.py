@@ -16,6 +16,7 @@ from django.utils.timezone import get_current_timezone
 from django.views.decorators.csrf import csrf_protect
 
 from .models import ActedActivity, Activity
+from .forms import ActivityForm
 
 
 class ActedUpdateView(UpdateView):
@@ -27,11 +28,13 @@ class ActedUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('index')
 
+
 def show_time(request, pk):
     acted = ActedActivity.objects.get(pk=pk)
     return render(
         request, 'activities/_time.html', context={'acted': acted}
     )
+
 
 def change_time(request, pk):
     acted = ActedActivity.objects.get(pk=pk)
@@ -45,15 +48,17 @@ def change_time(request, pk):
 
         current_started_localtime = acted.started.astimezone(tz)
         new_started_time = dateparse.parse_time(request.POST['started'])
-        new_started = current_started_localtime.replace(hour=new_started_time.hour, minute=new_started_time.minute)
+        new_started = current_started_localtime.replace(
+            hour=new_started_time.hour, minute=new_started_time.minute)
         acted.started = new_started
 
         current_finished_localtime = acted.finished.astimezone(tz)
         new_finished_time = dateparse.parse_time(request.POST['finished'])
-        new_finished = current_finished_localtime.replace(hour=new_finished_time.hour, minute=new_finished_time.minute)
+        new_finished = current_finished_localtime.replace(
+            hour=new_finished_time.hour, minute=new_finished_time.minute)
         acted.finished = new_finished
 
-        acted.save(update_fields=["started", "finished"]) 
+        acted.save(update_fields=["started", "finished"])
 
         if request.htmx:
             return redirect('index')
@@ -127,6 +132,20 @@ def index(request):
         return render(request, 'activities/partial.html', context)
     else:
         return render(request, 'activities/index.html', context)
+
+
+def add_activity_form(request):
+    if request.method == "GET":
+        return render(request,
+                      'activities/_partials/activity_form.html',
+                      {'form': ActivityForm})
+    if request.method == 'POST':
+        form = ActivityForm(request.POST or None)
+        if form.is_valid():
+            _ = form.save()
+        return render(request,
+                      'activities/_partials/activities_list.html',
+                      {'activities': Activity.objects.all()})
 
 
 def add_acted_activity(request, activity_id):

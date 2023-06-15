@@ -6,7 +6,7 @@ from .views import PurchaseUpdateView, products_index, \
 
 urlpatterns = [
     # path('?month=<month>', purchase_for_month, name='index_month'),
-    path('', purchases_index, name='index'),
+    path('', purchases_index, name='purchases_index'),
 
     # Product
     path('products/', products_index, name='products_index'),
