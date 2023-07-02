@@ -27,7 +27,6 @@ class IncomesListView(ListView):
         context = super().get_context_data(*args, **kwargs)
         totals = 0
         for i in context['object_list']:
-            print(i, totals)
             totals += i.amount
         context['totals'] = totals
         return context

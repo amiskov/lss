@@ -1,5 +1,6 @@
 <form hx-post="/{{acted.pk}}/change_time"
   hx-target="#table-and-form"
+  class="position-absolute p-1 bg-light shadow-md top-0 left-0 zi-1 active"
   hx-swap="outerHTML">
   <input type="time" name="started" value="{{ acted.started|date:"H:i" }}">
   —

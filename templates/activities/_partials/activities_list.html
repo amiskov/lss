@@ -17,7 +17,4 @@
   </form>
 {% endfor %}
 
-<a hx-get="/activities/form/"
- hx-swap="outerHTML"
- class="btn btn-secondary"
- href="#" title="Add Activity">➕</a>
+{% include 'activities/_partials/add_activity_button.html' %}

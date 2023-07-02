@@ -1,3 +1,6 @@
-<span hx-target="this" hx-swap="outerHTML" hx-get="/{{acted.pk}}/change_time" class="badge text-dark">
+<span
+  hx-target="this"
+  hx-swap="outerHTML" hx-get="/{{acted.pk}}/change_time" 
+  class="badge text-dark text-decoration-underline">
   {{ acted.started|date:"H:i" }}—{{ acted.finished|date:"H:i" }}
 </span>

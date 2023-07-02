@@ -39,6 +39,7 @@ DEBUG = os.environ.get('DEBUG', False) == 'True'
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '192.168.1.96',
+    'localhost',
     'v1131340.hosted-by-vdsina.ru',
     'am.local',
 ]
@@ -46,6 +47,7 @@ ALLOWED_HOSTS = [
 INTERNAL_IPS = (
     '127.0.0.1',
     '0.0.0.0',
+    'localhost:3000',
     '192.168.1.96',
     'am.local',
 )
@@ -64,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 3rd party
+    'rest_framework',
     'debug_toolbar',
     'django_htmx',
     'crispy_forms',
@@ -105,6 +108,8 @@ MIDDLEWARE = [
 # CORS_ALLOW_HEADERS = ['*']
 CORS_ORIGIN_WHITELIST = (
     'http://0.0.0.0:8080',
+    'http://localhost:3000',
+    'http://localhost',
     'http://0.0.0.0:8000',
     'http://192.168.1.96:8080',
     'http://v1131340.hosted-by-vdsina.ru',

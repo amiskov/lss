@@ -87,8 +87,6 @@ class ActedActivity(models.Model):
             # only today after 5 AM:
             # finished__hour__gte=5,
         ).order_by('-finished').prefetch_related('tag')
-        for a in acted:
-            print(a.tag.all())
         return (day, acted)
 
     class Meta:

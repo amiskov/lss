@@ -8,7 +8,9 @@ urlpatterns = [
     path('activities/form/',
          views.add_activity_form,
          name='add_activity'),
-
+    path('activities/add_button/',
+         views.add_activity_button,
+         name='add_activity_button'),
 
     # Acted Activities
     path('', views.index, name='index'),
