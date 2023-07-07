@@ -1,7 +1,17 @@
+from django.urls import path, include
 from django.urls import path
-from django.urls import path
+from rest_framework import routers
+from rest_framework.routers import SimpleRouter
+
+from activities.views.api_acted import ActedActivityViewSet
 
 from . import views
+
+# DRF urls
+router = SimpleRouter()
+router.register("api/acted", ActedActivityViewSet, basename="api_acted")
+# router.register(r'(?P<date>\d{4}-\d{2}-\d{2})', ActedActivityViewSet, basename="api_acted")
+
 
 urlpatterns = [
     # Activities
@@ -34,4 +44,5 @@ urlpatterns = [
     path('<pk>/change_time',
          views.change_time,
          name='change_time_form'),
-]
+] + router.urls
+

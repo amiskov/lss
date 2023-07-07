@@ -51,6 +51,14 @@ class ActedActivity(models.Model):
         return reverse("edit_acted_activity", kwargs={"pk": self.pk})
 
     @property
+    def activity_type(self) -> str:
+        return self.activity.activity_type
+
+    @property
+    def activity_name(self) -> str:
+        return self.activity.name
+
+    @property
     def duration(self) -> timedelta:
         return self.finished - self.started
 
