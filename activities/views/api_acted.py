@@ -1,6 +1,7 @@
 import datetime as dt
+import re
 
-from django.http.response import HttpResponse
+from django.http.response import HttpResponse, HttpResponseBadRequest
 from django.contrib import messages
 from django.shortcuts import redirect
 
@@ -34,12 +35,21 @@ class ActedActivityViewSet(viewsets.ModelViewSet):
         q = ActedActivity.objects \
             .select_related('activity') \
             .prefetch_related('tag')
-        if 'date' in self.request.GET:
-            d = dt.date.fromisoformat(self.request.GET['date'])
-            d_min = dt.datetime.combine(d, dt.time.min)
-            d_max = dt.datetime.combine(d, dt.time.max)
-            # Invoice.objects.get(user=user, date__range=(today_min, today_max))
-            q = q.filter(started__range=(d_min, d_max))
+
+        if 'date' not in self.request.GET:
+            d = dt.date.today()
+        else:
+            raw_date = self.request.GET['date']
+            if raw_date == 'today':
+                d = dt.date.today()
+            elif re.match(r'^\d{4}-\d{2}-\d{2}$', raw_date):
+                d = dt.date.fromisoformat(self.request.GET['date'])
+            else:
+                return HttpResponseBadRequest()
+
+        d_min = dt.datetime.combine(d, dt.time.min)
+        d_max = dt.datetime.combine(d, dt.time.max)
+        q = q.filter(started__range=(d_min, d_max))
         return q.all()
 
     serializer_class = ActedActivitySerializer

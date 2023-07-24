@@ -9,6 +9,7 @@ from . import views
 
 # DRF urls
 router = SimpleRouter()
+# router.register("api/acted/<str:day>", ActedActivityViewSet, basename="api_acted_for_day")
 router.register("api/acted", ActedActivityViewSet, basename="api_acted")
 # router.register(r'(?P<date>\d{4}-\d{2}-\d{2})', ActedActivityViewSet, basename="api_acted")
 
